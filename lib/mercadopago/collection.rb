@@ -9,8 +9,12 @@ module MercadoPago
     # - access_token: an access_token of the MercadoPago account associated with the payment to be checked.
     # - payment_id: the id of the payment to be checked.
     #
-    def self.notification(access_token, payment_id)
-      MercadoPago::Request.wrap_get("/collections/notifications/#{payment_id}?access_token=#{access_token}", { accept: 'application/json' })
+    def self.notification(access_token, payment_id, sandbox = false)
+      MercadoPago::Request.wrap_get("#{sandbox ? '/sandbox' : ''}/collections/notifications/#{payment_id}?access_token=#{access_token}", { accept: 'application/json' })
+    end
+
+    def self.get(access_token, payment_id, sandbox = false)
+      MercadoPago::Request.wrap_get("#{sandbox ? '/sandbox' : ''}/collections/#{payment_id}?access_token=#{access_token}", { accept: 'application/json' })
     end
 
     #

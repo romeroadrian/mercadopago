@@ -22,7 +22,7 @@ module MercadoPago
   #
   class Client
 
-    attr_reader :access_token, :refresh_token
+    attr_reader :access_token, :refresh_token, :expires_in
 
     #
     # Creates an instance and stores the access_token to make calls to the
@@ -31,8 +31,9 @@ module MercadoPago
     # - client_id
     # - client_secret
     #
-    def initialize(client_id, client_secret)
-      load_tokens MercadoPago::Authentication.access_token(client_id, client_secret)
+    def initialize(client_id, client_secret, sandbox = false)
+      @sandbox = sandbox
+      handle_auth MercadoPago::Authentication.access_token(client_id, client_secret)
     end
 
     #
@@ -42,7 +43,7 @@ module MercadoPago
     # - client_secret
     #
     def refresh_access_token(client_id, client_secret)
-      load_tokens MercadoPago::Authentication.refresh_access_token(client_id, client_secret, @refresh_token)
+      handle_auth MercadoPago::Authentication.refresh_access_token(client_id, client_secret, @refresh_token)
     end
 
     #
@@ -69,7 +70,15 @@ module MercadoPago
     # - payment_id: the id of the payment to be checked.
     #
     def notification(payment_id)
-      MercadoPago::Collection.notification(@access_token, payment_id)
+      MercadoPago::Collection.notification(@access_token, payment_id, @sandbox)
+    end
+
+    def get_payment(payment_id)
+      MercadoPago::Collection.get(@access_token, payment_id, @sandbox)
+    end
+
+    def get_merchant_order(payment_id)
+      MercadoPago::MerchantOrder.get(@access_token, payment_id)
     end
 
     #
@@ -91,12 +100,13 @@ module MercadoPago
     #
     # - auth: the authentication hash returned by MercadoPago.
     #
-    def load_tokens(auth)
+    def handle_auth(auth)
       mandatory_keys = %w{ access_token refresh_token }
 
       if (auth.keys & mandatory_keys) == mandatory_keys
         @access_token   = auth['access_token']
         @refresh_token  = auth['refresh_token']
+        @expires_in     = auth['expires_in']
       else
         raise AccessError, auth['message']
       end
