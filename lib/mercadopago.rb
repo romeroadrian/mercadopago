@@ -6,5 +6,7 @@ require 'mercadopago/collection'
 require 'mercadopago/client'
 require 'mercadopago/merchant_order'
 
+ActiveSupport.encode_big_decimal_as_string = false
+
 module MercadoPago
 end

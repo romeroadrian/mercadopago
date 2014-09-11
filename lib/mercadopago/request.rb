@@ -1,5 +1,5 @@
 require 'faraday'
-require 'json'
+require 'activesupport/json_encoder'
 
 module MercadoPago
 
@@ -54,10 +54,10 @@ module MercadoPago
         req.body = payload
       end
 
-      JSON.load(response.body)
+      JSON.parse(response.body)
     rescue Exception => e
       if e.respond_to?(:response)
-        JSON.load(e.response)
+        JSON.parse(e.response)
       else
         raise e
       end

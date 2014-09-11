@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   # specify any dependencies here:
-  s.add_dependency 'json', '>= 1.4.6'
+  s.add_dependency 'activesupport-json_encoder', '1.1.0'
   s.add_dependency 'faraday', '0.9.0'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'debugger'

@@ -13,7 +13,7 @@ module MercadoPago
     # - data: a hash of preferences that will be trasmitted to checkout API.
     #
     def self.create_preference(access_token, data)
-      payload = JSON.generate(data)
+      payload = data.to_json
       headers = { content_type: 'application/json', accept: 'application/json' }
 
       MercadoPago::Request.wrap_post("/checkout/preferences?access_token=#{access_token}", payload, headers)
