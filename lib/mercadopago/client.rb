@@ -36,6 +36,10 @@ module MercadoPago
       handle_auth MercadoPago::Authentication.access_token(client_id, client_secret)
     end
 
+    def refresh_auth(client_id, client_secret)
+      handle_auth MercadoPago::Authentication.access_token(client_id, client_secret)
+    end
+
     #
     # Refreshes an access token.
     #
