@@ -85,10 +85,10 @@ module MercadoPago
     #     subscription_payment::
     #       Subscription fee.
     #
-    def self.search(access_token, search_hash = {})
+    def self.search(access_token, search_hash = {}, sandbox = false)
       query = search_hash.map { |e| e.join('=') }.join('&')
 
-      MercadoPago::Request.wrap_get("/collections/search?access_token=#{access_token}&#{query}", { accept: 'application/json' })
+      MercadoPago::Request.wrap_get("#{sandbox ? '/sandbox' : ''}/collections/search?access_token=#{access_token}&#{query}", { accept: 'application/json' })
     end
 
   end
