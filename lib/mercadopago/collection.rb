@@ -1,3 +1,4 @@
+# encoding: utf-8
 module MercadoPago
 
   module Collection
@@ -8,13 +9,31 @@ module MercadoPago
     #
     # - access_token: an access_token of the MercadoPago account associated with the payment to be checked.
     # - payment_id: the id of the payment to be checked.
+    # - sandbox: whether or not the sandbox mode should be activated.
     #
     def self.notification(access_token, payment_id, sandbox = false)
       MercadoPago::Request.wrap_get("#{sandbox ? '/sandbox' : ''}/collections/notifications/#{payment_id}?access_token=#{access_token}", { accept: 'application/json' })
     end
 
     def self.get(access_token, payment_id, sandbox = false)
-      MercadoPago::Request.wrap_get("#{sandbox ? '/sandbox' : ''}/collections/#{payment_id}?access_token=#{access_token}", { accept: 'application/json' })
+      uri_prefix = sandbox ? '/sandbox' : ''
+      MercadoPago::Request.wrap_get("#{uri_prefix}/collections/notifications/#{payment_id}?access_token=#{access_token}", { accept: 'application/json' })
+    end
+
+    #
+    # - access_token: an access_token of the MercadoPago account associated with the payment to be checked.
+    # - authorized_id: the id of the authorized payment to be checked.
+    #
+    def self.notification_authorized(access_token, authorized_id)
+      MercadoPago::Request.wrap_get("/authorized_payments/#{authorized_id}?access_token=#{access_token}", { accept: 'application/json' })
+    end
+
+    #
+    # - access_token: an access_token of the MercadoPago account associated with the payment to be checked.
+    # - preapproval_id: the id of the recurring payment to be checked.
+    #
+    def self.notification_preapproval(access_token, preapproval_id)
+      MercadoPago::Request.wrap_get("/preapproval/#{preapproval_id}?access_token=#{access_token}", { accept: 'application/json' })
     end
 
     #
@@ -22,6 +41,7 @@ module MercadoPago
     #
     # - access_token: an access_token of the MercadoPago account associated with the payment to be checked.
     # - search_hash: querystring in hash format.
+    # - sandbox: whether or not the sandbox mode should be activated.
     #
     # == Search parameter valid keys:
     # id::
@@ -88,7 +108,8 @@ module MercadoPago
     def self.search(access_token, search_hash = {}, sandbox = false)
       query = search_hash.map { |e| e.join('=') }.join('&')
 
-      MercadoPago::Request.wrap_get("#{sandbox ? '/sandbox' : ''}/collections/search?access_token=#{access_token}&#{query}", { accept: 'application/json' })
+      uri_prefix = sandbox ? '/sandbox' : ''
+      MercadoPago::Request.wrap_get("#{uri_prefix}/collections/search?access_token=#{access_token}&#{query}", { accept: 'application/json' })
     end
 
   end
